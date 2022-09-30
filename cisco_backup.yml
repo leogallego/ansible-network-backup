@@ -5,7 +5,7 @@
   gather_facts: no
 
   collections:
-    - name: cisco.ios
+    - cisco.ios
 
   tasks:
     - name: "Backup Cisco ios configuration"
