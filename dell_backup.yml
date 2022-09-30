@@ -1,7 +1,7 @@
 ---
 - name: network backup playbook
   hosts: network
-  connection: network_cli
+#  connection: network_cli
 
   collections:
     - dellemc.os10
@@ -14,6 +14,7 @@
           filename: backup.cfg
           dir_path: /tmp
       register: dellcfg
+      when: ansible_network_os == 'dellemc.os10.os10'
 
     - name: "Create backup dest dir it doesnt exist"
       ansible.builtin.file:
