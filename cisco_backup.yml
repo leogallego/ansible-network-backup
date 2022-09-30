@@ -7,9 +7,9 @@
   collections:
     - cisco.ios
   
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
-    ansible_network_os: cisco.ios.ios
+#  vars:
+#    ansible_connection: ansible.netcommon.network_cli
+#    ansible_network_os: cisco.ios.ios
 
 
   tasks:
@@ -24,7 +24,7 @@
 
     - name: "Create backup dest dir if it doesnt exist"
       ansible.builtin.file:
-        path: /tmp/backup
+        path: /tmp/backup/cisco
         state: directory
       delegate_to: backup-server
       become: true
@@ -37,7 +37,7 @@
 
 
     - name: "Copy config to remote backup server"
-      copy:
+      ansible.builtin.copy:
 #        src: "{{ ciscocfg.backup_path }}"
         src: "/tmp/backup.cfg"
         dest: "/tmp/backup/cisco/"
