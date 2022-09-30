@@ -1,7 +1,8 @@
 ---
 - name: network backup playbook
   hosts: network
-  connection: network_cli
+#  connection: network_cli
+  gather_facts: no
 
   collections:
     - cisco.ios
