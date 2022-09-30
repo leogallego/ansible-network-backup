@@ -25,6 +25,12 @@
       become: true
       run_once: true
 
+    - name: debug ciscocfg
+      debug:
+        msg:
+        - "{{ ciscocfg }}"
+
+
     - name: "Copy config to remote backup server"
       copy:
 #        src: "{{ ciscocfg.backup_path }}"
