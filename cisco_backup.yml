@@ -28,7 +28,7 @@
     - name: "Copy config to remote backup server"
       copy:
         src: "{{ ciscocfg.backup_path }}"
-        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+        dest: "/tmp/backup/cisco/"
       when: ciscocfg is defined
       delegate_to: backup-server
       become: true
