@@ -30,6 +30,7 @@
       become: true
       run_once: true
 
+<<<<<<< HEAD
     - name: "Remove non config lines (Building config)"
       lineinfile:
         path: "{{ ciscocfg.backup_path }}"
@@ -37,6 +38,8 @@
         state: absent
       delegate_to: localhost
 
+=======
+>>>>>>> 0930f44fa221adfdd155434648a5aaaac1977520
 #    - name: debug ciscocfg
 #      debug:
 #        msg:
