@@ -1,7 +1,6 @@
 ---
 - name: network backup playbook
   hosts: network
-#  connection: network_cli
   gather_facts: no
 
   collections:
@@ -31,11 +30,17 @@
       become: true
       run_once: true
 
-    - name: debug ciscocfg
-      debug:
-        msg:
-        - "{{ ciscocfg }}"
+    - name: "Remove non config lines (Building config)"
+      lineinfile:
+        path: "{{ ciscocfg.backup_path }}"
+        line: "Building configuration..."
+        state: absent
+      delegate_to: localhost
 
+#    - name: debug ciscocfg
+#      debug:
+#        msg:
+#        - "{{ ciscocfg }}"
 
     - name: "Copy config to remote backup server"
       ansible.builtin.copy:
