@@ -5,16 +5,17 @@
   gather_facts: no
 
   collections:
-    - cisco.ios
+    - name: cisco.ios
 
   tasks:
     - name: "Backup Cisco ios configuration"
-      cisco.ios.config:
+      cisco.ios.ios_config:
         backup: yes
         backup_options:
           filename: backup.cfg
           dir_path: /tmp
       register: ciscocfg
+      when: ansible_network_os == 'cisco.ios.ios'
 
     - name: "Create backup dest dir if it doesnt exist"
       ansible.builtin.file:
