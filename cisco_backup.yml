@@ -20,7 +20,8 @@
           filename: "backup.cfg"
           dir_path: /tmp/
       register: ciscocfg
-      when: ansible_network_os == 'cisco.ios.ios'
+#      when: ansible_network_os == 'cisco.ios.ios'
+      when: ansible_network_os is defined
 
     - name: "Create backup dest dir if it doesnt exist"
       ansible.builtin.file:
