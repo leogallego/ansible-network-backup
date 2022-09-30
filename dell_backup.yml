@@ -1,0 +1,35 @@
+---
+- name: network backup playbook
+  hosts: network
+  connection: network_cli
+
+  collections:
+    - dellemc.os10
+
+  tasks:
+    - name: "Backup dell os10 configuration"
+      dellemc.os10.os10_config:
+        backup: yes
+        backup_options:
+          filename: backup.cfg
+          dir_path: /tmp
+      register: dellcfg
+
+    - name: "Create backup dest dir it doesnt exist"
+      ansible.builtin.file:
+        path: /tmp/backup
+        state: directory
+      delegate_to: backup-server
+      become: true
+      run_once: true
+
+    - name: "Copy config to remote backup server"
+      copy:
+        src: "{{ dellcfg.backup_path }}"
+        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+      when: dellcfg is defined
+      delegate_to: backup-server
+      become: true
+      
+   
+       

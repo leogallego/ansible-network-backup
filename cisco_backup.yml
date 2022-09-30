@@ -1,0 +1,35 @@
+---
+- name: network backup playbook
+  hosts: network
+  connection: network_cli
+
+  collections:
+    - cisco.ios
+
+  tasks:
+    - name: "Backup Cisco ios configuration"
+      cisco.ios.config:
+        backup: yes
+        backup_options:
+          filename: backup.cfg
+          dir_path: /tmp
+      register: ciscocfg
+
+    - name: "Create backup dest dir if it doesnt exist"
+      ansible.builtin.file:
+        path: /tmp/backup
+        state: directory
+      delegate_to: backup-server
+      become: true
+      run_once: true
+
+    - name: "Copy config to remote backup server"
+      copy:
+        src: "{{ ciscocfg.backup_path }}"
+        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+      when: ciscocfg is defined
+      delegate_to: backup-server
+      become: true
+      
+   
+       
