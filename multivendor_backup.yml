@@ -1,0 +1,66 @@
+---
+## NOT WORKING.
+## WORK IN PROGRESS
+## dellemc.os10 SUPPORTED IN EE-29-RHEL8 ONLY
+#
+- name: network backup playbook
+  hosts: network
+#  connection: network_cli
+  gather_facts: no
+
+  collections:
+    - cisco.ios
+    - dellemc.os10
+
+## check vars in inventory for devices
+#  cisco vars:
+#    ansible_connection: ansible.netcommon.network_cli
+#    ansible_network_os: cisco.ios.ios
+#
+#  dell vars:
+#    ansible_connection: ansible.netcommon.network_cli
+#    ansible_network_os: dellemc.os10.os10
+
+  tasks:
+    - name: "Backup Cisco ios configuration"
+      cisco.ios.ios_config:
+        backup: yes
+        backup_options:
+          filename: "backup.cfg"
+          dir_path: /tmp/
+      register: ciscocfg
+      when: ansible_network_os == 'cisco.ios.ios'
+
+    - name: debug ciscocfg
+      debug:
+        msg:
+        - "{{ ciscocfg }}"
+
+
+    - name: "Create time stamp for play"
+      set_fact:
+        datetime: "{{ lookup('pipe','date +%Y-%m-%d-%H-%M') }}"
+      delegate_to: backup-server
+      delegate_facts: true
+      run_once: true      
+
+    - name: "Create backup dest dir if it doesnt exist"
+      ansible.builtin.file:
+        path: /tmp/backup
+        state: directory
+      delegate_to: backup-server
+      become: true
+      run_once: true
+
+    - name: "Copy config to remote backup server"
+      ansible.builtin.copy:
+        src: "{{ ciscocfg.backup_path }}"
+        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+#        src: "/tmp/backup.cfg"
+#        dest: "/tmp/backup/cisco/"
+      when: ciscocfg is defined
+      delegate_to: backup-server
+      become: true
+      
+   
+       
