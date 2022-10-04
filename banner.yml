@@ -1,5 +1,5 @@
 ---
-- Configure a banner for multi os 
+- name: Configure a banner for multi os 
   hosts: network  
   gather_facts: false
 
