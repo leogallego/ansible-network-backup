@@ -1,0 +1,49 @@
+---
+- name: network backup playbook
+  hosts: network
+  gather_facts: no
+
+  collections:
+    - junipernetworks.junos
+      
+#  vars:
+#    ansible_connection: ansible.netcommon.network_cli
+#    ansible_network_os: junipernetworks.junos
+
+
+  tasks:
+    - name: "Backup Juniper Junos configuration"
+      junipernetworks.junos.junos_config:
+        backup: yes
+        backup_options:
+          filename: "backup.cfg"
+          dir_path: /tmp/
+      register: junipercfg
+#      when: ansible_network_os == 'junipernetworks.junos.junos'
+      when: ansible_network_os is defined
+
+    - name: "Create backup dest dir if it doesnt exist"
+      ansible.builtin.file:
+        path: /tmp/backup/junipernetworks
+        state: directory
+      delegate_to: backup-server
+      become: true
+      run_once: true
+
+
+#    - name: debug junipercfg
+#      debug:
+#        msg:
+#        - "{{ junipercfg }}"
+
+    - name: "Copy config to remote backup server"
+      ansible.builtin.copy:
+#        src: "{{ junipercfg.backup_path }}"
+        src: "/tmp/backup.cfg"
+        dest: "/tmp/backup/junipernetworks/"
+      when: ciscocfg is defined
+      delegate_to: backup-server
+      become: true
+      
+   
+       

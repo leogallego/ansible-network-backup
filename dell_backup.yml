@@ -14,9 +14,10 @@
           filename: backup.cfg
           dir_path: /tmp
       register: dellcfg
-      when: ansible_network_os == 'dellemc.os10.os10'
+#      when: ansible_network_os == 'dellemc.os10.os10'
+      when: ansible_network_os is defined
 
-    - name: "Create backup dest dir it doesnt exist"
+    - name: "Create backup dest dir if it doesnt exist"
       ansible.builtin.file:
         path: /tmp/backup
         state: directory
@@ -27,7 +28,8 @@
     - name: "Copy config to remote backup server"
       copy:
         src: "{{ dellcfg.backup_path }}"
-        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+#        dest: "/tmp/backup/{{ hostvars['backup-server'].datetime }}/"
+        dest: "/tmp/backup/dellemc/"
       when: dellcfg is defined
       delegate_to: backup-server
       become: true

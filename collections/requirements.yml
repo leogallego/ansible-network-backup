@@ -1,4 +1,5 @@
 ---
 collections:
-- cisco.ios
-- dellemc.os10
+  - cisco.ios
+  - dellemc.os10
+  - junipernetworks.junos
