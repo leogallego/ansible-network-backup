@@ -29,6 +29,7 @@
       delegate_to: backup-server
       become: true
       run_once: true
+      register: ciscopath
 
     - name: "Remove non config lines (Building config)"
       lineinfile:
@@ -42,11 +43,20 @@
 #        msg:
 #        - "{{ ciscocfg }}"
 
+    - name: "Create time stamp for play"
+        set_fact:
+          datetime: "{{ lookup('pipe','date +%Y-%m-%d-%H-%M') }}"
+        delegate_to: backup-server
+        delegate_facts: true
+        run_once: true      
+
+
     - name: "Copy config to remote backup server"
       ansible.builtin.copy:
-#        src: "{{ ciscocfg.backup_path }}"
-        src: "/tmp/backup.cfg"
-        dest: "/tmp/backup/cisco/"
+        src: "{{ ciscocfg.backup_path }}"
+        dest: "/tmp/backup/cisco/{{ hostvars['backup-server'].timedate }}/"
+#      src: "/tmp/backup.cfg"
+#      dest: "/tmp/backup/cisco/"
       when: ciscocfg is defined
       delegate_to: backup-server
       become: true
