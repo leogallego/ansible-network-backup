@@ -54,7 +54,7 @@
     - name: "Copy config to remote backup server"
       ansible.builtin.copy:
         src: "{{ ciscocfg.backup_path }}"
-        dest: "/tmp/backup/cisco/{{ hostvars['backup-server'].timedate }}/"
+        dest: "/tmp/backup/cisco/{{ hostvars['backup-server'].datetime }}/"
 #      src: "/tmp/backup.cfg"
 #      dest: "/tmp/backup/cisco/"
       when: ciscocfg is defined
