@@ -1,10 +1,10 @@
 ---
-- name: Configure a banner for multi os 
-  hosts: network  
+- name: Configure a banner for multi os
+  hosts: network
   gather_facts: false
 
   vars:
-    bannertext: "Este es un banner general para todos los switch"
+    bannertext: "MOTD: Este es un banner general para todos los switch"
 
   tasks:
     - name: Configure motd banner for cisco.ios
@@ -20,7 +20,7 @@
         state: present
         banner: motd
         text: "{{ bannertext }}"
-      when: (ansible_network_os == 'junos') or 
+      when: (ansible_network_os == 'junos') or
             (ansible_network_os == 'jupiternetworks.junos.junos')
 
     - name: Configure login banner for junipernetworks.junos
@@ -29,10 +29,7 @@
         banner: login
         text: |
           este es un login banner
-          de multiples 
+          de multiples
           lineas
-      when: (ansible_network_os == 'junos') or 
+      when: (ansible_network_os == 'junos') or
             (ansible_network_os == 'jupiternetworks.junos.junos')
-
-
-        
