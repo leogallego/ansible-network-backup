@@ -1,20 +1,29 @@
 ---
 - name: network backup playbook
   hosts: network
-  gather_facts: no
+  gather_facts: false
 
   collections:
     - cisco.ios
-  
+
 #  vars:
+  ## network devices host details variables
 #    ansible_connection: ansible.netcommon.network_cli
 #    ansible_network_os: cisco.ios.ios
+#    ansible_user: "ansible"
+#    ansible_become: "true"
+#    ansible_become_method: "true"
+
+  ## backup server host details variables
+#    ansible_user: "userbackup"
+#    ansible_password: "remotepassword"
+#    ansible_become_password: "xyz"
 
 
   tasks:
     - name: "Backup Cisco ios configuration"
       cisco.ios.ios_config:
-        backup: yes
+        backup: true
         backup_options:
           filename: "backup.cfg"
           dir_path: /tmp/
@@ -32,7 +41,7 @@
       register: ciscopath
 
     - name: "Remove non config lines (Building config)"
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ ciscocfg.backup_path }}"
         line: "Building configuration..."
         state: absent
@@ -44,11 +53,11 @@
 #        - "{{ ciscocfg }}"
 
     - name: "Create time stamp for play"
-      set_fact:
+      ansible.builtin.set_fact:
         datetime: "{{ lookup('pipe','date +%Y-%m-%d-%H-%M') }}"
       delegate_to: backup-server
       delegate_facts: true
-      run_once: true      
+      run_once: true
 
 
     - name: "Copy config to remote backup server"
@@ -60,6 +69,3 @@
       when: ciscocfg is defined
       delegate_to: backup-server
       become: true
-      
-   
-       
